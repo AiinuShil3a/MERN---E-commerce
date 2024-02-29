@@ -1,24 +1,41 @@
-import React from "react";
-import { createBrowserRouter } from "react-router-dom";
-import Main from "../layout/Main";
-import Home from "../pages/home/home";
+import {createBrowserRouter} from "react-router-dom";
+import Main from '../layout/Main';
 import ProductList from "../pages/shop/product_list";
+import UpdateProfile from "../pages/dashboard/UpdateProfile";
+import PrivateRouter from "../PrivateRouter/PrivateRouter";
+import SignIn from "../components/SignIn";
+import Home from "../pages/home/Home";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Main />,
-    children:[
+    children: [
+      
       {
-        path:"/",
-        element:<Home />,
+        path: "/",
+        element: <Home />,
       },
       {
-        path:"/shops",
-        element:<ProductList />,
-      }
+        path: "/shops",
+        element: (
+          <PrivateRouter>
+            <ProductList />
+          </PrivateRouter>
+        ),
+      },
+      {
+        path: "/update-profile",
+        element: <UpdateProfile />,
+      },
     ],
   },
+  {
+    path:"/signin",
+    element:<SignIn/>
+  }
 ]);
 
-export default router;
+
+
+export default router
