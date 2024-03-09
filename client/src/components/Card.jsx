@@ -1,15 +1,14 @@
-import React, { useState , useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { AuthContext } from "../context/AuthProvider";
-import axios from 'axios';
-
+import axios from "axios";
 
 const Card = ({ item }) => {
-  const { user } = useContext(AuthContext);
-  console.log(user);
+  const { user , setReload } = useContext(AuthContext);
   const { _id, name, image, price, description } = item;
   const [isHeartFilled, setIsHeartFilled] = useState(false);
+
   const handleHeartClick = () => {
     setIsHeartFilled(!isHeartFilled);
   };
@@ -17,34 +16,38 @@ const Card = ({ item }) => {
     console.log(item);
     console.log(_id);
 
-    if(!user){
+    if (!user) {
       Swal.fire({
         icon: "info",
         title: "Please Login",
         showConfirmButton: false,
-        timer: 1500
-      }); 
-    }else{
+        timer: 1500,
+      });
+    } else {
       const cartObjects = {
         product_id: _id.toString(),
         email: user.email,
         price: price,
         name: user.displayName,
         image: image,
-        quantity: 1
+        quantity: 1,
       };
-    
+
       console.log(cartObjects);
       try {
-        const response = await axios.post("http://localhost:4000/carts", cartObjects, {
-        })
-        if(response.status === 200){
+        const response = await axios.post(
+          "http://localhost:4000/carts",
+          cartObjects,
+          {}
+        );
+        setReload(true);
+        if (response.status === 200) {
           Swal.fire({
             icon: "success",
             title: "Your add item to cart",
             showConfirmButton: false,
-            timer: 1500
-          }); 
+            timer: 1500,
+          });
           console.log("เพิ่มสินค้าลงในตะกร้าเรียบร้อย:", response.data);
         }
       } catch (error) {
@@ -52,11 +55,11 @@ const Card = ({ item }) => {
           icon: "info",
           title: "Error add carts",
           showConfirmButton: false,
-          timer: 1500
-        }); 
-      } 
+          timer: 1500,
+        });
+      }
     }
-  }
+  };
   return (
     <div className="card shadow-xl relative mr-5 md:my-5">
       <div
@@ -89,8 +92,12 @@ const Card = ({ item }) => {
         </Link>
         <p>{description} </p>
         <div className="card-actions justify-between items-center mt-2">
-          <h5 className="font-semibold">{price} <span className="text-sm text-red">฿</span></h5>
-          <button className="btn bg-red text-white" onClick={addToCart}>Add to Cart</button>
+          <h5 className="font-semibold">
+            {price} <span className="text-sm text-red">฿</span>
+          </h5>
+          <button className="btn bg-red text-white" onClick={addToCart}>
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>

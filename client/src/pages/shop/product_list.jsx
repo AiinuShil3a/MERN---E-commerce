@@ -17,7 +17,6 @@ const ProductList = () => {
       try {
         const response = await axios.get("http://localhost:4000/products", {
         })
-        console.log("สินค้าทั้งหมด:", response.data);
         const data = await response.data
         setProducts(data);
         setFilterItems(data);
@@ -25,7 +24,6 @@ const ProductList = () => {
           "all",
           ...new Set(data.map((item) => item.category)),
         ]);
-        console.log("ดีมากมีข้อมูลแล้ว");
       } catch (error) {
         console.log("Error fetching data:", error);
       }

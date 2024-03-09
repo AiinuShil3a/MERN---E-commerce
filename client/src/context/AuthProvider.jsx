@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useContext, createContext } from "react";
 export const AuthContext = createContext();
-import app  from "../firebase/firebase.config";
+import app from "../firebase/firebase.config";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -18,6 +18,7 @@ import {
 const AuthProvider = ({ children }) => {
   const auth = getAuth(app);
   const [user, setUser] = useState(null);
+  const [reload, setReload] = useState(false);
 
   const createUser = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -36,8 +37,7 @@ const AuthProvider = ({ children }) => {
     return signInWithPopup(auth, provider);
   };
 
-  
-  const updateUserProfile = ({name, photoURL}) => {
+  const updateUserProfile = ({ name, photoURL }) => {
     return updateProfile(auth.currentUser, {
       displayName: name,
       photoURL: photoURL,
@@ -52,6 +52,8 @@ const AuthProvider = ({ children }) => {
     logout,
     signUpWithGoogle,
     updateUserProfile,
+    reload,
+    setReload,
   };
   //check if user is Logged in
   useEffect(() => {

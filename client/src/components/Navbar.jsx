@@ -1,12 +1,40 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import Profile from "./Profile";
 import Model from "./Modal";
 import ModalCart from "./ModalCart";
 import { AuthContext } from "../context/AuthProvider";
+import axios from "axios";
 
 const Navbar = () => {
-  const { user } = useContext(AuthContext);
-  console.log(user);
+  const { user, reload, setReload } = useContext(AuthContext);
+  const [dataCart, setDataCart] = useState([]);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+
+  useEffect(() => {
+    setReload(false);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/carts/${user.email}`
+        );
+        const data = await response.data;
+        setDataCart(data);
+
+        // คำนวณผลรวมของ quantity .reduce() เป็นฟังก์ชันที่ใช้ในการลดค่าของอาร์เรย์ไปยังค่าเดียว โดยการใช้ฟังก์ชันที่กำหนดเองเพื่อดำเนินการกับแต่ละสมาชิกของอาร์เรย์และสะสมผลลัพธ์.
+        const sumQuantity = data.reduce(
+          (total, cartItem) => total + cartItem.quantity,
+          0
+        );
+        if (response.status === 200) {
+          setTotalQuantity(sumQuantity);
+        }
+      } catch (error) {
+        console.log("No data");
+      }
+    };
+
+    fetchData();
+  }, [user, reload]);
   const navItem = (
     <>
       <li>
@@ -132,10 +160,12 @@ const Navbar = () => {
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                <span className="badge badge-sm indicator-item">8</span>
+                <span className="badge badge-sm indicator-item">
+                  {totalQuantity}
+                </span>
               </div>
-            </div>         
-    {user ? (
+            </div>
+            {user ? (
               <>
                 <Profile user={user} />
               </>
@@ -163,7 +193,12 @@ const Navbar = () => {
             )}
           </div>
           <Model name="login" />
-          <ModalCart name="carts" />
+          <ModalCart
+            name="carts"
+            reload={reload}
+            totalQuantity={totalQuantity}
+            setTotalQuantity={setTotalQuantity}
+          />
         </div>
       </div>
     </header>
