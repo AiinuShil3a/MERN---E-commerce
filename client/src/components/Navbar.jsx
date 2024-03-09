@@ -7,7 +7,6 @@ import axios from "axios";
 
 const Navbar = () => {
   const { user, reload, setReload } = useContext(AuthContext);
-  const [dataCart, setDataCart] = useState([]);
   const [totalQuantity, setTotalQuantity] = useState(0);
 
   useEffect(() => {
@@ -18,7 +17,6 @@ const Navbar = () => {
           `http://localhost:4000/carts/${user.email}`
         );
         const data = await response.data;
-        setDataCart(data);
 
         // คำนวณผลรวมของ quantity .reduce() เป็นฟังก์ชันที่ใช้ในการลดค่าของอาร์เรย์ไปยังค่าเดียว โดยการใช้ฟังก์ชันที่กำหนดเองเพื่อดำเนินการกับแต่ละสมาชิกของอาร์เรย์และสะสมผลลัพธ์.
         const sumQuantity = data.reduce(
