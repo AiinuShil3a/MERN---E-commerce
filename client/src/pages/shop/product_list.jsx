@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import Card from "../../components/Card";
+import axios from 'axios';
+
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -13,14 +15,17 @@ const ProductList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/product.json");
-        const data = await response.json();
+        const response = await axios.get("http://localhost:4000/products", {
+        })
+        console.log("สินค้าทั้งหมด:", response.data);
+        const data = await response.data
         setProducts(data);
         setFilterItems(data);
         setCategories([
           "all",
-          ...new Set(data.map((item) => item.category)), // ใช้ new Set() ไม่ใช่ new setCategories()
+          ...new Set(data.map((item) => item.category)),
         ]);
+        console.log("ดีมากมีข้อมูลแล้ว");
       } catch (error) {
         console.log("Error fetching data:", error);
       }

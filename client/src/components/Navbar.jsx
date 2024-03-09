@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import Profile from "./Profile";
 import Model from "./Modal";
+import ModalCart from "./ModalCart";
 import { AuthContext } from "../context/AuthProvider";
 
 const Navbar = () => {
@@ -16,7 +17,7 @@ const Navbar = () => {
           <summary>Category</summary>
           <ul className="p-2">
             <li>
-              <a href="/shop">All</a>
+              <a href="/shops">All</a>
             </li>
             <li>
               <a>Clothing</a>
@@ -114,6 +115,7 @@ const Navbar = () => {
               tabIndex={0}
               role="button"
               className="btn btn-ghost btn-circle hidden sm:flex"
+              onClick={() => document.getElementById("carts").showModal()}
             >
               <div className="indicator">
                 <svg
@@ -132,8 +134,8 @@ const Navbar = () => {
                 </svg>
                 <span className="badge badge-sm indicator-item">8</span>
               </div>
-            </div>
-            {user ? (
+            </div>         
+    {user ? (
               <>
                 <Profile user={user} />
               </>
@@ -161,6 +163,7 @@ const Navbar = () => {
             )}
           </div>
           <Model name="login" />
+          <ModalCart name="carts" />
         </div>
       </div>
     </header>
