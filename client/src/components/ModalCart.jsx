@@ -9,6 +9,9 @@ const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
   const [dataCart, setDataCart] = useState([]);
   const [productData, setProductData] = useState([]);
   const [nodata, setNodata] = useState(false);
+  const [randomOneCary, setRandomOneCart] = useState([]);
+  const [totalCash, setTotalCash] = useState([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,6 +34,13 @@ const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
         const productDataResults = await Promise.all(productDataPromises);
         setProductData(productDataResults);
 
+        //เลือกสินค้าตัวแรกเพื่อนำข้อมูลในคำสั่งซื้อบางส่วนมาใช้
+        const randomOne = data[0]
+        setRandomOneCart(randomOne);
+        
+        const totalCashInCart = data.reduce((Bath , item) => Bath + item.price * item.quantity, 0);
+        setTotalCash(totalCashInCart);
+        
         if (response.status === 200) {
           setNodata(false);
         }
@@ -39,7 +49,7 @@ const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
       }
     };
     fetchData();
-  }, [user, reload]);
+  }, [user, reload , totalCash]);
 
   const closeModal = () => {
     const modal = document.getElementById(name);
@@ -167,6 +177,18 @@ const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
                 </button>
               </div>
             ))}
+            {/* ข้อมูลรายละเอียดเพิ่มเติม */}
+              <div className="flex p-4 items-center">
+                <p>Name : {randomOneCary.name}</p>
+                <p className="ml-auto">{totalQuantity} รายการ</p>
+              </div>
+              <div className="flex p-4 items-center">
+                <p>Email : {randomOneCary.email}</p>
+                <p className="ml-auto">รวม {totalCash} บาท</p>
+              </div>
+              <div className="flex p-4 items-center">
+                <p>PhoneNumber : 086-251-0754</p>
+              </div>
             {/* ปุ่ม Clear All และ Buy Now */}
             <div className="flex">
               <button
