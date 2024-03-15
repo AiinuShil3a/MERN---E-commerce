@@ -5,6 +5,7 @@ import UpdateProfile from "../pages/dashboard/UpdateProfile";
 import PrivateRouter from "../PrivateRouter/PrivateRouter";
 import SignIn from "../components/SignIn";
 import Home from "../pages/home/Home";
+import DashBoard from "../layout/DashBoard"
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
   {
     path:"/signin",
     element:<SignIn/>
+  },
+  {
+    path:"/admin",
+    element:<DashBoard />
   }
 ]);
 

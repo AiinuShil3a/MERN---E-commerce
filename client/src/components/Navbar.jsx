@@ -4,35 +4,44 @@ import Model from "./Modal";
 import ModalCart from "./ModalCart";
 import { AuthContext } from "../context/AuthProvider";
 import axios from "axios";
+import useCart from "../hook/useCart";
 
 const Navbar = () => {
-  const { user, reload, setReload } = useContext(AuthContext);
+  const { user, reload } = useContext(AuthContext);
   const [totalQuantity, setTotalQuantity] = useState(0);
+  const [cart , refetch] = useCart();
+  console.log(cart);
 
   useEffect(() => {
-    setReload(false);
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/carts/${user.email}`
-        );
-        const data = await response.data;
+    const sumQuantity = cart.reduce(
+      (total, cartItem) => total + cartItem.quantity,
+        0
+      );
+      setTotalQuantity(sumQuantity);
+  },[cart])
 
-        // คำนวณผลรวมของ quantity .reduce() เป็นฟังก์ชันที่ใช้ในการลดค่าของอาร์เรย์ไปยังค่าเดียว โดยการใช้ฟังก์ชันที่กำหนดเองเพื่อดำเนินการกับแต่ละสมาชิกของอาร์เรย์และสะสมผลลัพธ์.
-        const sumQuantity = data.reduce(
-          (total, cartItem) => total + cartItem.quantity,
-          0
-        );
-        if (response.status === 200) {
-          setTotalQuantity(sumQuantity);
-        }
-      } catch (error) {
-        console.log("No data");
-      }
-    };
+  // useEffect(() => {
+  //   setReload(false);
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `http://localhost:4000/carts/${user.email}`
+  //       );
+  //       const data = await response.data;
+  //       const sumQuantity = data.reduce(
+  //         (total, cartItem) => total + cartItem.quantity,
+  //         0
+  //       );
+  //       if (response.status === 200) {
+  //         setTotalQuantity(sumQuantity);
+  //       }
+  //     } catch (error) {
+  //       console.log("No data");
+  //     }
+  //   };
 
-    fetchData();
-  }, [user, reload]);
+  //   fetchData();
+  // }, [user, reload]);
   const navItem = (
     <>
       <li>

@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { AuthContext } from "../context/AuthProvider";
 import axios from "axios";
+import useCart from "../hook/useCart";
 
 const Card = ({ item }) => {
   const { user , setReload } = useContext(AuthContext);
   const { _id, name, image, price, description } = item;
   const [isHeartFilled, setIsHeartFilled] = useState(false);
+  const [cart , refetch] = useCart();
 
   const handleHeartClick = () => {
     setIsHeartFilled(!isHeartFilled);
@@ -40,7 +42,7 @@ const Card = ({ item }) => {
           cartObjects,
           {}
         );
-        setReload(true);
+        refetch();
         if (response.status === 200) {
           Swal.fire({
             icon: "success",

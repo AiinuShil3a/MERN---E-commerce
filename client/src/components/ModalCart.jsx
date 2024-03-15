@@ -3,6 +3,9 @@ import { AiOutlineClose, AiOutlineDelete } from "react-icons/ai";
 import { FiPlus, FiMinus } from "react-icons/fi";
 import { AuthContext } from "../context/AuthProvider";
 import axios from "axios";
+import useCart from "../hook/useCart";
+import Swal from "sweetalert2";
+
 
 const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
   const { user, setReload } = useContext(AuthContext);
@@ -11,7 +14,7 @@ const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
   const [nodata, setNodata] = useState(false);
   const [randomOneCary, setRandomOneCart] = useState([]);
   const [totalCash, setTotalCash] = useState([]);
-
+  const [cart , refetch] = useCart();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,7 +52,7 @@ const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
       }
     };
     fetchData();
-  }, [user, reload , totalCash]);
+  }, [user, cart , totalCash , nodata]);
 
   const closeModal = () => {
     const modal = document.getElementById(name);
@@ -67,7 +70,7 @@ const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
     };
     try {
       await axios.post(`http://localhost:4000/carts`, cartObjects);
-      setReload(true);
+      refetch()
     } catch (error) {
       console.log(error);
     }
@@ -89,7 +92,7 @@ const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
           `http://localhost:4000/carts/${cartItem._id}`,
           cartObjects
         );
-        setReload(true);
+        refetch()
       } else {
         console.log("Cannot DecreaseQuantity");
       }
@@ -99,13 +102,32 @@ const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
   };
 
   const handleDelete = async (cartItem) => {
+    const modal = document.getElementById(name);
+    modal.close();
     try {
-      await axios.delete(`http://localhost:4000/carts/${cartItem._id}`);
-      const total = totalQuantity - cartItem.quantity;
-      setTotalQuantity(total);
-      setReload(true);
+      // แสดง SweetAlert สำหรับยืนยันการลบ
+      const result = await Swal.fire({
+        title: 'ยืนยันการลบ?',
+        text: 'คุณต้องการลบรายการนี้หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ใช่, ลบ!',
+        cancelButtonText: 'ยกเลิก'
+      });
+  
+      if (result.isConfirmed) {
+        // ผู้ใช้กดยืนยันการลบ
+        await axios.delete(`http://localhost:4000/carts/${cartItem._id}`);
+        const total = totalQuantity - cartItem.quantity;
+        setTotalQuantity(total);
+        refetch();
+        Swal.fire('Deleted!', 'รายการถูกลบเรียบร้อย', 'success');
+      }
     } catch (error) {
       console.log(error);
+      Swal.fire('Error', 'เกิดข้อผิดพลาดในการลบ', 'error');
     }
   };
 
@@ -113,7 +135,8 @@ const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
     try {
       await axios.delete(`http://localhost:4000/carts/clear/${user.email}`);
       setTotalQuantity(0);
-      setReload(true);
+      setNodata(true);
+      refetch();
     } catch (error) {
       console.log(error);
     }
