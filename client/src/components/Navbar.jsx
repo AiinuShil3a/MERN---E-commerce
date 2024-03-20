@@ -3,7 +3,7 @@ import Profile from "./Profile";
 import Model from "./Modal";
 import ModalCart from "./ModalCart";
 import { AuthContext } from "../context/AuthProvider";
-import axios from "axios";
+//import axiosPublic from "../hook/useAxios";
 import useCart from "../hook/useCart";
 
 const Navbar = () => {
@@ -24,7 +24,7 @@ const Navbar = () => {
   //   setReload(false);
   //   const fetchData = async () => {
   //     try {
-  //       const response = await axios.get(
+  //       const response = await axiosPublic.get(
   //         `http://localhost:4000/carts/${user.email}`
   //       );
   //       const data = await response.data;

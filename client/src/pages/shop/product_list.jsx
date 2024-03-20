@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Card from "../../components/Card";
-import axios from 'axios';
+import axiosPublic from "../../hook/useAxios";
 
 
 const ProductList = () => {
@@ -15,7 +15,7 @@ const ProductList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/products", {
+        const response = await axiosPublic.get("http://localhost:4000/products", {
         })
         const data = await response.data
         setProducts(data);

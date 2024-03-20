@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { AuthContext } from "../context/AuthProvider";
-import axios from "axios";
+import axiosPublic from "../hook/useAxios";
 import useCart from "../hook/useCart";
 
 const Card = ({ item }) => {
@@ -37,7 +37,7 @@ const Card = ({ item }) => {
 
       console.log(cartObjects);
       try {
-        const response = await axios.post(
+        const response = await axiosPublic.post(
           "http://localhost:4000/carts",
           cartObjects,
           {}

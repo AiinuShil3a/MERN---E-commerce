@@ -14,6 +14,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
+import axiosPublic from "../hook/useAxios";
 
 const AuthProvider = ({ children }) => {
   const auth = getAuth(app);
@@ -60,13 +61,31 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
+        const userInfo = {email : currentUser.email}
+        try {
+          axiosPublic.post("/jwt", userInfo)
+          .then((response) => {   
+            console.log(response.data);
+        
+            if(response.data.token){
+              localStorage.setItem("token", response.data.token);
+            } else {
+              localStorage.removeItem("token");
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });        
+        } catch (error) {
+          console.log(error);
+        }
         setUser(currentUser);
       }
     });
     return () => {
       return unsubscribe();
     };
-  }, [auth]);
+  }, [axiosPublic]);
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>

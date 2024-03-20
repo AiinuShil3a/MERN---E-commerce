@@ -4,8 +4,10 @@ const dotenv = require("dotenv")
 const mongoose = require("mongoose");
 const ProductRouter = require("./routes/productrouter")
 const CartRouter = require("./routes/cartrouter")
+const UserRouter = require("./routes/user.router")
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const jwt = require('jsonwebtoken')
 
 
 require("dotenv").config();
@@ -59,7 +61,13 @@ app.get("/", (req, res) => {
 });
 app.use("/products", ProductRouter)
 app.use("/carts", CartRouter)
+app.use("/users", UserRouter)
 
+app.post("/jwt" , async (req,res) => {
+  const user = req.body;
+  const token = jwt.sign(user, process.env.SECRET, { expiresIn: '1h' });
+  res.json({ token });
+});
 
 const PORT = process.env.PORT;
 const server = app.listen(PORT, () => {

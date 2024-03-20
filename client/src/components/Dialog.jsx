@@ -1,7 +1,9 @@
-import React from "react";
+import React , {useState} from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
+import ManageUser from "./Admin-Component/ManageUser"
 
 const Dialog = () => {
+  const [whatMenu , setWhatMenu] = useState("")
   return (
     <div className="flex">
       <div className="md:w-1/4">
@@ -26,7 +28,7 @@ const Dialog = () => {
               <div className="flex flex-row items-center ">
                 <img src="/logo.png" alt="" className="h-20 mx-0" />
                 <button className="btn btn-sm btn-primary rounded-full">
-                    username
+                    ADMIN
                 </button>
               </div>
               {/* Sidebar content here */}
@@ -43,7 +45,7 @@ const Dialog = () => {
               <li>
                 <a>Manage Item</a>
               </li>
-              <li>
+              <li onClick={() => setWhatMenu("AllUsers")}>
                 <a>All Users</a>
               </li>
               <hr class="h-px my-4 bg-gray-100 border-0 dark:bg-gray-300"></hr>
@@ -59,12 +61,19 @@ const Dialog = () => {
               <li>
                 <a>Customer Support</a>
               </li>
+              <li>
+                <a>Log out</a>
+              </li>
             </ul>
           </div>
         </div>
       </div>
       <div className="md:w-3/4 ml-10 ">
-        <h1>Dashbord</h1>
+        {
+          whatMenu === "AllUsers" 
+          ? <ManageUser />
+          : <h1>Manage</h1>
+        }
       </div>
     </div>
   );
