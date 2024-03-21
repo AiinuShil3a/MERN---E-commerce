@@ -1,11 +1,20 @@
 import React , {useState} from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { FaUser } from "react-icons/fa";
 import ManageUser from "./Admin-Component/ManageUser"
+import useAuth from "../hook/useAuth";
+import useAdmin from "../hook/useAdmin";
 
 const Dialog = () => {
   const [whatMenu , setWhatMenu] = useState("")
+  const {logout} = useAuth()
+  const [isAdmin , isAdminLoading] = useAdmin()
+  console.log(isAdmin);
   return (
-    <div className="flex">
+    <div>
+    {
+      isAdmin ? (
+        <div className="flex">
       <div className="md:w-1/4">
         <div className="drawer lg:drawer-open">
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -61,7 +70,7 @@ const Dialog = () => {
               <li>
                 <a>Customer Support</a>
               </li>
-              <li>
+              <li onClick={logout}>
                 <a>Log out</a>
               </li>
             </ul>
@@ -75,6 +84,14 @@ const Dialog = () => {
           : <h1>Manage</h1>
         }
       </div>
+    </div>
+      ) : (
+        <button class="btn btn-outline btn-sx sm:btn-sm lg:btn-lg sm:hidden flex items-center gap-2  btn-warning">
+          <FaUser />    Logout
+        </button>
+
+      )
+    }
     </div>
   );
 };
