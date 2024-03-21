@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
     const existingUser = await UserModel.findOne({ email: user.email });
 
     if (existingUser) {
-      res.status(302).json({ message: "email can't used" });
+      return res.status(302).json({ message: "email can't used" }); // ใส่ return ที่นี่
     }
 
     if (!user.photo) {
@@ -43,9 +43,9 @@ router.post("/", async (req, res) => {
     // บันทึกลงในฐานข้อมูล
     const savedCart = await newCart.save();
 
-    res.status(201).json(savedCart);
+    return res.status(201).json(savedCart); // ใส่ return ที่นี่
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message }); // ใส่ return ที่นี่
   }
 });
 

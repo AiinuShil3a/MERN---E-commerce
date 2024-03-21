@@ -1,10 +1,12 @@
-import React, { useContext, useState } from "react";
-import { Link, createHashRouter } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SiGmail } from "react-icons/si";
 import { FaFacebookF } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import { AuthContext } from "../context/AuthProvider";
+import useAuth from "../hook/useAuth";
+import axiosPublic from "../hook/useAxios";
+import Swal from "sweetalert2";
 
 const Modal = ({ name }) => {
   const {
@@ -13,8 +15,8 @@ const Modal = ({ name }) => {
     formState: { errors },
   } = useForm();
 
-  const { login , createUser ,signUpWithGoogle  } = useContext(AuthContext);
-
+  const { login, createUser, signUpWithGoogle, updateUserProfile } = useAuth();
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
 
   const onSubmit = (data) => {
@@ -27,17 +29,36 @@ const Modal = ({ name }) => {
           const user = result.user;
           console.log(user);
           alert("Login Successful");
+          document.getElementById("login").close();
         })
         .catch((error) => {
           console.log(error);
         });
     } else {
-        createUser(data.email, data.password)
+      createUser(data.email, data.password)
         .then((result) => {
+          // Signed up
           const user = result.user;
           console.log(user);
-          alert("Sign Up Successful");
-          document.getElementById("login").close()
+          console.log(data);
+          updateUserProfile(data.name, data.photoURL).then(() => {
+            const userInfo = {
+              name: data.name,
+              email: data.email,
+              password: data.password,
+            };
+            axiosPublic.post("/users", userInfo).then((response) => {
+              console.log(response);
+              console.log(user);
+              Swal.fire({
+                title: "Account created Successfully",
+                icon: "success",
+                timer: 1500,
+              });
+              document.getElementById("login").close();
+            });
+          });
+          // alert("Account created Successfully")
         })
         .catch((error) => {
           console.log(error);
@@ -45,18 +66,29 @@ const Modal = ({ name }) => {
     }
   };
 
-  const GoogleSignUp = () => {
+  const googleSigUp = async () => {
+    document.getElementById("login").close();
     signUpWithGoogle()
-    .then((result) => {
-      const user = result.user;
-      console.log(user);
-      alert("Google Sign Up Successful");
-      document.getElementById("login").close()
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+      .then((result) => {
+        const user = result.user;
+        const userInfo = {
+          name: user?.displayName,
+          email: user?.email,
+          photoURL: user?.photoURL,
+        };
+        axiosPublic.post("/users", userInfo).then((response) => {
+          console.log(response.status);
+        });
+        Swal.fire({
+          title: "Login google account successfully",
+          icon: "success",
+          timer: 1500,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
@@ -66,7 +98,23 @@ const Modal = ({ name }) => {
     <dialog id={name} className="modal">
       <div className="modal-box">
         <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
-          <h3 className="font-bold text-lg">{isLogin ? "Please Login!" : "Sign Up Now!"}</h3>
+          <h3 className="font-bold text-lg">
+            {isLogin ? "Please Login!" : "Sign Up Now!"}
+          </h3>
+          {!isLogin ? (
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Name</span>
+              </label>
+              <input
+                type="text"
+                placeholder="your name"
+                className="input input-bordered"
+                required
+                {...register("name")}
+              />
+            </div>
+          ) : null}
           <div className="form-control">
             <label className="label">
               <span className="label-text">Email</span>
@@ -135,7 +183,10 @@ const Modal = ({ name }) => {
           </button>
         </form>
         <div className="text-center space-x-3 mb-5 ">
-          <button onClick={GoogleSignUp} className="btn btn-ghost btn-circle hover:bg-red-700 hover:text-white ">
+          <button
+            onClick={googleSigUp}
+            className="btn btn-ghost btn-circle hover:bg-red-700 hover:text-white "
+          >
             <SiGmail />
           </button>
           <button className="btn btn-ghost btn-circle hover:bg-red-700 hover:text-white ">
