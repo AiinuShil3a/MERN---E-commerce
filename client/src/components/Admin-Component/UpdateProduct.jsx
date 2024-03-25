@@ -1,19 +1,33 @@
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { FaSave } from 'react-icons/fa';
-import useAxiosSecure from '../../hook/useAxiosSecure'
+import { FaSave } from "react-icons/fa";
+import useAxiosSecure from "../../hook/useAxiosSecure";
 import Swal from "sweetalert2";
 
+const UpdateProduct = () => {
+  const axiosSecure = useAxiosSecure();
+  const { id } = useParams();
+  const { handleSubmit, register, setValue } = useForm();
+  console.log(id);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axiosSecure.get(`/products/${id}`);
+        if (res.status === 200) {
+          setValue("name", res.data.name);
+          setValue("detail", res.data.description);
+          setValue("category", res.data.category);
+          setValue("price", res.data.price);
+          setValue("imageURL", res.data.image);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
 
-
-const AddProducts = () => {
-  const AxiosSecure = useAxiosSecure()
-
-  const {
-    handleSubmit,
-    formState: { errors },
-    register,
-    watch,
-  } = useForm();
+    fetchData();
+  }, []);
 
   const onSubmit = async (data) => {
     const productInfo = {
@@ -21,14 +35,16 @@ const AddProducts = () => {
       description: data.detail,
       category: data.category,
       price: data.price,
-      image: data.imageURL
+      image: data.imageURL,
     };
     try {
-      AxiosSecure.post("/products", productInfo).then((response) => {
+      axiosSecure.put(`/products/${id}`, productInfo).then((response) => {
         if (response.status === 200) {
           Swal.fire({
-            title: "Created Successfully",
+            title: "Update Successfully",
             icon: "success",
+          }).then(() => {
+            window.location.href = "/dashboard/listProduct";
           });
         }
       });
@@ -43,7 +59,7 @@ const AddProducts = () => {
   return (
     <div>
       <div className=" flex my-10">
-        <h2 className="text-2xl"> Add a new</h2>
+        <h2 className="text-2xl"> Update a</h2>
         <h2 className="text-2xl ml-3 text-red"> Product items</h2>
       </div>
       <div className="h-full w-[70vw]">
@@ -54,7 +70,6 @@ const AddProducts = () => {
             </label>
             <input
               type="text"
-              placeholder="Name of product"
               className="input input-bordered"
               required
               {...register("name")}
@@ -65,7 +80,11 @@ const AddProducts = () => {
               <label className="label">
                 <span className="label-text">Type of product</span>
               </label>
-              <select className="input input-bordered w-full" {...register("category")} required>
+              <select
+                className="input input-bordered w-full"
+                {...register("category")}
+                required
+              >
                 <option value="" disabled selected hidden>
                   Select your type product
                 </option>
@@ -80,7 +99,6 @@ const AddProducts = () => {
               </label>
               <input
                 type="number"
-                placeholder="Price of product"
                 className="input input-bordered w-full"
                 required
                 {...register("price")}
@@ -93,7 +111,6 @@ const AddProducts = () => {
             </label>
             <textarea
               type="text"
-              placeholder="Detail Product"
               className="input input-bordered h-[8rem]"
               required
               {...register("detail")}
@@ -105,15 +122,17 @@ const AddProducts = () => {
             </label>
             <input
               type="text"
-              placeholder="Image url : www.image.com/image01"
               className="input input-bordered"
               required
               {...register("imageURL")}
             />
           </div>
           <div className="mt-10">
-            <button type="submit" className="bg-red flex items-center justify-center px-4 py-2 text-white rounded-md">
-              Create Item
+            <button
+              type="submit"
+              className="bg-red flex items-center justify-center px-4 py-2 text-white rounded-md"
+            >
+              Update Item
               <FaSave className="ml-2" />
             </button>
           </div>
@@ -123,4 +142,4 @@ const AddProducts = () => {
   );
 };
 
-export default AddProducts;
+export default UpdateProduct;

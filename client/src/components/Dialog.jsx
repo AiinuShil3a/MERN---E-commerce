@@ -1,9 +1,9 @@
 import React , {useState} from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { FaUser } from "react-icons/fa";
-import ManageUser from "./Admin-Component/ManageUser"
 import useAuth from "../hook/useAuth";
 import useAdmin from "../hook/useAdmin";
+import { Outlet , Link } from "react-router-dom";
 
 const Dialog = () => {
   const [whatMenu , setWhatMenu] = useState("")
@@ -48,22 +48,32 @@ const Dialog = () => {
               <li>
                 <a>Manage Orders</a>
               </li>
-              <li>
-                <a href="/addProduct">Add Product</a>
-              </li>
-              <li>
-                <a>Manage Item</a>
-              </li>
-              <li onClick={() => setWhatMenu("AllUsers")}>
-                <a>All Users</a>
-              </li>
+              <Link to={"/dashboard/createProduct"}>
+                <li>
+                  <a>Add Product</a>
+                </li>
+              </Link>
+              <Link to={"/dashboard/listProduct"}>
+                <li>
+                  <a>Manage Item</a>
+                </li>
+              </Link>
+              <Link to={"/dashboard/listUser"}>
+                <li>
+                  <a>All Users</a>
+                </li>
+              </Link>
               <hr class="h-px my-4 bg-gray-100 border-0 dark:bg-gray-300"></hr>
-              <li>
-                <a>Home</a>
-              </li>
-              <li>
-                <a>Product</a>
-              </li>
+              <Link to={"/"}>
+                <li>
+                  <a>Home</a>
+                </li>
+              </Link>
+              <Link to={"/shops"}>
+                <li>
+                  <a>Product</a>
+                </li>
+              </Link>
               <li>
                 <a>Order Tracking</a>
               </li>
@@ -77,12 +87,8 @@ const Dialog = () => {
           </div>
         </div>
       </div>
-      <div className="md:w-3/4 ml-10 ">
-        {
-          whatMenu === "AllUsers" 
-          ? <ManageUser />
-          : <h1>Manage</h1>
-        }
+      <div className="md:w-1.5/4 ">
+        <Outlet />
       </div>
     </div>
       ) : (

@@ -68,9 +68,9 @@ const User = () => {
   }
   return (
     <div>
-      <div className=" flex justify-between mx-4 my-4">
+      <div className=" flex justify-between mx-5 my-10">
         <h2 className=" text-2xl"> All users</h2>
-        <h2 className=" text-2xl"> {users.length}</h2>
+        <h2 className=" text-2xl"> {users.length} คน</h2>
       </div>
       <div>
         <div className="overflow-x-auto">
@@ -101,7 +101,7 @@ const User = () => {
                       <div className="avatar">
                         <div className="mask mask-squircle w-12 h-12">
                           <img
-                            src={user.photoURL}
+                            src={user.photo}
                             alt="Avatar Tailwind CSS Component"
                           />
                         </div>

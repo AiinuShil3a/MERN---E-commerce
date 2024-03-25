@@ -7,6 +7,10 @@ import RouterIsAdmin from "../PrivateRouter/RouterIsAdmin";
 import SignIn from "../components/SignIn";
 import Home from "../pages/home/Home";
 import DashBoard from "../layout/DashBoard"
+import ManageUser from "../components/Admin-Component/ManageUser"
+import CreateProducts from "../components/Admin-Component/AddProducts"
+import UpdateProducts from "../components/Admin-Component/ManageProduct"
+import UpdateProductById from "../components/Admin-Component/UpdateProduct"
 
 const router = createBrowserRouter([
   {
@@ -42,7 +46,25 @@ const router = createBrowserRouter([
       <RouterIsAdmin>
         <DashBoard />
       </RouterIsAdmin>
-    )
+    ),
+    children: [
+      {
+        path: "/dashboard/listUser",
+        element: <ManageUser />,
+      },
+      {
+        path: "/dashboard/createProduct",
+        element: <CreateProducts />,
+      },
+      {
+        path: "/dashboard/listProduct",
+        element: <UpdateProducts />,
+      },
+      {
+        path: "/dashboard/update/:id",
+        element: <UpdateProductById />,
+      },
+    ]
   }
 ]);
 
