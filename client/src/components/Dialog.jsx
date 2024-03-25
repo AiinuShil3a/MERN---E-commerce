@@ -86,10 +86,12 @@ const Dialog = () => {
       </div>
     </div>
       ) : (
-        <button class="btn btn-outline btn-sx sm:btn-sm lg:btn-lg sm:hidden flex items-center gap-2  btn-warning">
-          <FaUser />    Logout
-        </button>
-
+        <div className="flex flex-col items-center justify-center h-screen">
+          <p className="text-red-500 mb-4">คุณไม่ใช่แอดมินกรุณาใช้บัญชีแอดมิน</p>
+          <button className="btn btn-outline btn-lg flex items-center gap-2 btn-warning" onClick={logout}>
+            <FaUser /> Logout
+          </button>
+        </div>
       )
     }
     </div>

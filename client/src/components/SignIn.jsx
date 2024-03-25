@@ -17,10 +17,7 @@ const Signin = () => {
   const from = location?.state?.pathname || "/";
 
   const closeModal = () => {
-    const modal = document.getElementById(name);
-    if (modal) {
-      modal.close();
-    }
+    navigate("/")
   };
   const {
     register,
@@ -37,8 +34,7 @@ const Signin = () => {
         .then((result) => {
           const user = result.user;
           //console.log(user);
-          document.getElementById(name).close();
-          navigate(from, { replace: true });
+          navigate("/")
           alert("Login Successful");
         })
         .catch((error) => {

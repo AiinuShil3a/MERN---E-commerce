@@ -38,12 +38,13 @@ router.post("/", async (req, res) => {
     if (!user.photo) {
         user.photo = "https://static.wikia.nocookie.net/worldofmayhem_gamepedia_en/images/8/81/Bugs_Bunny_%28artwork%29.png/revision/latest/scale-to-width-down/1200?cb=20210205220852";
     }
-    const newCart = new UserModel(req.body);
 
-    // บันทึกลงในฐานข้อมูล
-    const savedCart = await newCart.save();
-
-    return res.status(201).json(savedCart); // ใส่ return ที่นี่
+    if(!existingUser){
+      const newCart = new UserModel(req.body);
+      // บันทึกลงในฐานข้อมูล
+      const savedCart = await newCart.save();
+      return res.status(201).json(savedCart); // ใส่ return ที่นี่
+    }
   } catch (error) {
     return res.status(500).json({ message: error.message }); // ใส่ return ที่นี่
   }
