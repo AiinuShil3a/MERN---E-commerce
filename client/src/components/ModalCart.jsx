@@ -124,8 +124,8 @@ const Modal = ({ name, reload, totalQuantity, setTotalQuantity }) => {
         await axiosPublic.delete(`http://localhost:4000/carts/${cartItem._id}`);
         const total = totalQuantity - cartItem.quantity;
         setTotalQuantity(total);
-        refetch();
         await Swal.fire("Deleted!", "รายการถูกลบเรียบร้อย", "success");
+        refetch();
       }
       modal.showModal();
     } catch (error) {

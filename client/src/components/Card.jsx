@@ -14,7 +14,7 @@ const Card = ({ item }) => {
   const handleHeartClick = () => {
     setIsHeartFilled(!isHeartFilled);
   };
-  const addToCart = async () => {
+  const addToCart = async() => {
     console.log(item);
     console.log(_id);
 
